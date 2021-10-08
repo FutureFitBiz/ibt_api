@@ -1,0 +1,31 @@
+version: '3.1'
+services:
+  web_ibt:
+    build: ./
+    container_name: web_ibt
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1
+    links:
+      - mysql_ibt
+    command: flask run --host=0.0.0.0 --port=5000
+  mysql_ibt:
+    image: mysql:8.0.21
+    container_name: mysql_ibt
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_DATABASE=ibt
+      - MYSQL_ROOT_USER=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=ffuser
+      - MYSQL_PASSWORD=ffuser
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
